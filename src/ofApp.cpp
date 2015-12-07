@@ -41,28 +41,10 @@ void ofApp::setup(){
 	// we're going to load a ton of points into an ofMesh
 	mesh.setMode(OF_PRIMITIVE_POINTS);
 	
-	int height=250;
-	int width=250;
-
-	// loop through the image in the x and y axes
-	int skip = 4; // load a subset of the points
-	for(int y = -250; y < width; y +=skip) {
-		for(int x = -250; x < height; x+=skip) {
-			ofColor cur = ofColor(255,0, 0);
-			if(cur.a > 0) {
-				// the alpha value encodes depth, let's remap it to a good depth range
-				float z = ofMap(cur.a, 0, 255, -300, 300);
-				cur.a = 255;
-				mesh.addColor(cur);
-				ofVec3f pos(x, z-450, y);
-				mesh.addVertex(pos);
-			}
-		}
-	}
 
 	ofEnableDepthTest();
-	glEnable(GL_POINT_SMOOTH); // use circular points instead of square points
-	glPointSize(3); // make the points bigger
+//	glEnable(GL_POINT_SMOOTH); // use circular points instead of square points
+	glPointSize(1); // make the points bigger
 
 
 }
@@ -145,13 +127,37 @@ void ofApp::draw(){
 	// draw the fft resutls:
 	ofSetColor(255,255,255,255);
 	
-	float width = (float)(5*256) / nBandsToGet;
-	for (int i = 0;i < nBandsToGet; i++){
+//	float width = (float)(5*256) / nBandsToGet;
+/*	for (int i = 0;i < nBandsToGet; i++){
 		// (we use negative height here, because we want to flip them
 		// because the top corner is 0,0)
 		ofDrawRectangle(100+i*width,ofGetHeight()-100,width,-(fftSmoothed[i] * 200));
 	}
-	
+*/	
+
+	int height=64;
+	int width=64;
+	int depth =64;
+
+	// loop through the image in the x and y axes
+	int skip = 3; // load a subset of the points
+	for(int y = -64; y < width; y +=skip) {
+		for(int x = -64; x < height; x+=skip) {
+			for (int z = -64; z < depth; z+=skip){
+
+				mesh.addColor(ofColor(x,y,z));
+				ofVec3f pos((fftSmoothed[y] * 200), (fftSmoothed[y] * 400),z);
+				mesh.addVertex(pos);
+
+		
+
+			}
+		}
+
+	}
+
+
+
 	// finally draw the playing circle:
 
 	ofEnableAlphaBlending();
